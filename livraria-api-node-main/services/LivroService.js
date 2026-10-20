@@ -27,9 +27,15 @@ class LivroService {
     };
   }
 
-  criar({ titulo, ano, autor_id }) {
-    if (!titulo || !autor_id) {
+  criar({ titulo, ano, autor_id } = {}) {
+    if (typeof titulo !== 'string' || titulo.trim() === "" || autor_id === undefined || autor_id === null) {
       throw { status: 400, message: "O título e o autor_id são obrigatórios." };
+    }
+    if (!Number.isInteger(autor_id)) {
+      throw { status: 400, message: "O autor_id deve ser um número inteiro." };
+    }
+    if (ano !== undefined && ano !== null && !Number.isInteger(ano)) {
+      throw { status: 400, message: "O ano deve ser um número inteiro." };
     }
 
     const autor = repository.buscarAutorPorId(autor_id);
@@ -40,12 +46,12 @@ class LivroService {
     return repository.salvarLivro({
       titulo: titulo.trim(),
       ano: ano || new Date().getFullYear(),
-      autor_id: Number(autor_id)
+      autor_id
     });
   }
 
-  adicionarComentario(livroId, { texto, usuario }) {
-    if (!texto || texto.trim() === "") {
+  adicionarComentario(livroId, { texto, usuario } = {}) {
+    if (typeof texto !== 'string' || texto.trim() === "") {
       throw { status: 400, message: "O texto do comentário não pode estar vazio." };
     }
 

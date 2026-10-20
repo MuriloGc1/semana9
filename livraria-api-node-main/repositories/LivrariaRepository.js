@@ -1,18 +1,22 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 class LivrariaRepository {
   constructor() {
     // Garante que o arquivo fique na raiz do projeto (onde o server.js roda)
     this.dbPath = path.resolve(process.cwd(), 'database.txt');
+    // Contas de demonstração (senhas conhecidas, hash BCrypt gerado na inicialização)
+    this.hashAdmin = bcrypt.hashSync('admin123', 10);
+    this.hashLeitor = bcrypt.hashSync('leitor123', 10);
     this._garantirArquivoInicial();
   }
 
   _obterDadosPadrao() {
     return {
       usuarios: [
-        { id: 1, nome: "Admin", email: "admin@livraria.com", senha_hash: "$2b$10$9v3m0C1O6mK9BqV3j0Xg9.1fG/3zR1i5e.7F6o4D1u1G2H3J4K5L6", role: "ADMIN" },
-        { id: 2, nome: "Leitor", email: "leitor@gmail.com", senha_hash: "$2b$10$9v3m0C1O6mK9BqV3j0Xg9.1fG/3zR1i5e.7F6o4D1u1G2H3J4K5L6", role: "USER" }
+        { id: 1, nome: "Admin", email: "admin@livraria.com", senha_hash: this.hashAdmin, role: "ADMIN" },
+        { id: 2, nome: "Leitor", email: "leitor@gmail.com", senha_hash: this.hashLeitor, role: "USER" }
       ],
       autores: [
         { id: 1, nome: "Machado de Assis", nacionalidade: "Brasileiro" }
